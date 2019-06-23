@@ -4,14 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_card"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
     app:cardCornerRadius="20dp">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/item_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srcCompat="@android:drawable/btn_star_big_on"
+        android:layout_gravity="center"
+        tools:srcCompat="@android:drawable/btn_star_big_on"
         tools:layout_height="150dp" />
+
+    <TextView
+        android:id="@+id/item_position_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|top"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#FFF"
+        android:text="TextView"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 </androidx.cardview.widget.CardView>
