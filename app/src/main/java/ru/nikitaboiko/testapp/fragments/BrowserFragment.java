@@ -37,17 +37,9 @@ public class BrowserFragment extends Fragment {
                              Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.fragment_browser, container, false);
         ButterKnife.bind(this, inflatedView);
-        webView.setWebViewClient(new MyWebViewClient() {
-            public void onProgressChanged(WebView view, int progress) {
-
-            }
-        });
-        buttonGo.setOnClickListener(v -> {
-            loadSite();
-        });
-        buttonRefresh.setOnClickListener(v -> {
-            loadSite();
-        });
+        webView.setWebViewClient(new MyWebViewClient());
+        buttonGo.setOnClickListener(v -> loadSite());
+        buttonRefresh.setOnClickListener(v -> loadSite());
         buttonBack.setOnClickListener(v -> {
             if (webView.canGoBack()) {
                 webView.goBack();
@@ -58,21 +50,23 @@ public class BrowserFragment extends Fragment {
                 webView.goForward();
             }
         });
-        search.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    loadSite();
-                }
-                return false;
+        search.setOnKeyListener((v, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                loadSite();
             }
+            return false;
         });
+        loadSite();
         return inflatedView;
     }
 
     private void loadSite() {
         if (!search.getText().toString().isEmpty()) {
-            webView.loadUrl(search.getText().toString());
+            if (search.getText().toString().startsWith("http")) {
+                webView.loadUrl(search.getText().toString());
+            } else {
+                webView.loadUrl("http://" + search.getText().toString());
+            }
         }
     }
 
