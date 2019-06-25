@@ -1,16 +1,19 @@
 package ru.nikitaboiko.testapp.fragments;
 
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 
 import androidx.fragment.app.Fragment;
 
@@ -31,12 +34,15 @@ public class BrowserFragment extends Fragment {
     ImageButton buttonRefresh;
     @BindView(R.id.fragment_browser_button_go)
     ImageButton buttonGo;
+    @BindView(R.id.fragment_browser_progress_bar)
+    ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.fragment_browser, container, false);
         ButterKnife.bind(this, inflatedView);
+        webView.setWebChromeClient(new MyWebChromeClient());
         webView.setWebViewClient(new MyWebViewClient());
         buttonGo.setOnClickListener(v -> loadSite());
         buttonRefresh.setOnClickListener(v -> loadSite());
@@ -60,6 +66,12 @@ public class BrowserFragment extends Fragment {
         return inflatedView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadSite();
+    }
+
     private void loadSite() {
         if (!search.getText().toString().isEmpty()) {
             if (search.getText().toString().startsWith("http")) {
@@ -71,7 +83,7 @@ public class BrowserFragment extends Fragment {
     }
 
     private class MyWebViewClient extends WebViewClient {
-        // @TargetApi(Build.VERSION_CODES.N)
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             view.loadUrl(request.getUrl().toString());
@@ -81,9 +93,25 @@ public class BrowserFragment extends Fragment {
         @Override
         public void onPageFinished(WebView view, String url) {
             search.setText(url);
+            progressBar.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            progressBar.setVisibility(View.VISIBLE);
         }
 
 
+
+    }
+
+    private class MyWebChromeClient extends WebChromeClient {
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            super.onProgressChanged(view, newProgress);
+            progressBar.setProgress(newProgress, true);
+        }
     }
 
 }
