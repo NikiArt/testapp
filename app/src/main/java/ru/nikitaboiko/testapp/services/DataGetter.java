@@ -40,7 +40,7 @@ public class DataGetter {
             public void onResponse(Call<ResponseGiphy> call, Response<ResponseGiphy> response) {
                 if (response.body() != null) {
                     for (DataGiphy dataImg : response.body().getData()) {
-                        imageUrls.add(dataImg.getImages().getFixed_height().getUrl());
+                        imageUrls.add(dataImg.getImages().getFixedHeight().getUrl());
                     }
                     giphyAdapter.notifyDataSetChanged();
                 }
